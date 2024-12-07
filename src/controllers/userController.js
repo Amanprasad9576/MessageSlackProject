@@ -29,7 +29,10 @@ export const signUp = async (req, res) => {
 
   export const signIn = async (req, res) => {
     try {
+        console.log('Request body:', req.body);
+
       const response = await signInService(req.body);
+      console.log("Detail in controller layer",response);
       return res
         .status(StatusCodes.OK)
         .json(successResponse(response, 'User signed in successfully'));

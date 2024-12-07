@@ -2,15 +2,18 @@ import bcrypt from 'bcrypt';
 import { StatusCodes } from 'http-status-codes';
 
 import userRepository from "../repositories/userRepository.js";
+import { createJWT } from '../utils/common/authUtils.js';
 import ClientError from '../utils/errors/clientError.js';
-import ValidationError from "../utils/errors/validationError.js";
+//import ValidationError from "../utils/errors/validationError.js";
+
+
 export const signUpService = async (data) => {
     try {
       const newUser = await userRepository.create(data);
       return newUser;
     } catch (error) {
       console.log('User service error', error);
-      if (error.name === 'ValidationError') {
+/*      if (error.name === 'ValidationError') {
         throw new ValidationError(
           {
             error: error.errors
@@ -26,12 +29,14 @@ export const signUpService = async (data) => {
           'A user with same email or username already exists'
         );
       }
+ */       
     }
   };
 
   export const signInService = async (data) => {
     try {
       const user = await userRepository.getByEmail(data.email);
+      console.log("Detail in service layer",user);
       if (!user) {
         throw new ClientError({
           explanation: 'Invalid data sent from the client',
@@ -55,7 +60,7 @@ export const signUpService = async (data) => {
         username: user.username,
         avatar: user.avatar,
         email: user.email,
-     //   token: createJWT({ id: user._id, email: user.email })
+        token: createJWT({ id: user._id, email: user.email })
       };
     } catch (error) {
       console.log('User service error', error);

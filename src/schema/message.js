@@ -1,4 +1,3 @@
-import { Channel } from "diagnostics_channel";
 import mongoose from "mongoose";
 
 export const messageSchema = new mongoose.Schema({
@@ -23,7 +22,7 @@ export const messageSchema = new mongoose.Schema({
 
   workspaceId:{
     type:mongoose.Schema.Types.ObjectId,
-    ref:'workspace',
+    ref:'Workspace',
     required:[true,'workspace id is required']
   }
 

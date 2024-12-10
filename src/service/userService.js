@@ -4,7 +4,7 @@ import { StatusCodes } from 'http-status-codes';
 import userRepository from "../repositories/userRepository.js";
 import { createJWT } from '../utils/common/authUtils.js';
 import ClientError from '../utils/errors/clientError.js';
-//import ValidationError from "../utils/errors/validationError.js";
+import ValidationError from "../utils/errors/validationError.js";
 
 
 export const signUpService = async (data) => {
@@ -13,7 +13,7 @@ export const signUpService = async (data) => {
       return newUser;
     } catch (error) {
       console.log('User service error', error);
-/*      if (error.name === 'ValidationError') {
+     if (error.name === 'ValidationError') {
         throw new ValidationError(
           {
             error: error.errors
@@ -29,7 +29,7 @@ export const signUpService = async (data) => {
           'A user with same email or username already exists'
         );
       }
- */       
+        
     }
   };
 

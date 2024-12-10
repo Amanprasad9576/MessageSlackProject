@@ -30,8 +30,23 @@ export const signUp = async (req, res) => {
 
   export const signIn = async (req, res) => {
     try {
-        console.log('Request body:', req.body);
-
+        console.log("Request body:", req.body);
+        if (!req.body.email) {
+          return res.status(StatusCodes.BAD_REQUEST).json({
+            success: false,
+            err: ["email Required"],
+            data: {},
+            message: "Validation error : email Required"
+          });
+        }
+        if (!req.body.password) {
+          return res.status(StatusCodes.BAD_REQUEST).json({
+            success: false,
+            err: ["password Required"],
+            data: {},
+            message: "Validation error : password Required"
+          });
+        }
       const response = await signInService(req.body);
       console.log("Detail in controller layer",response);
       return res

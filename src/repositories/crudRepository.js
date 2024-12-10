@@ -26,7 +26,18 @@ export default  function crudRepository(model){
            return updateDoc;
         },
 
-
-    
+        deleteMany: async function (modelIds) {
+            const response = await model.deleteMany({
+              _id: {
+                $in: modelIds
+              }
+            });
+            return response;
+          }
     };
+
 }
+
+
+// This repository is common for all the repository 
+// all the repository use the function of this repository

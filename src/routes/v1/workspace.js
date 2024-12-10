@@ -2,7 +2,9 @@ import express from 'express';
 
 import { createWorkspaceController,
         deleteWorkspaceController,
-        getWorkspaceController
+        getWorkspaceController,
+        getWorkspaceByJoinCodeController,
+        updateWorkspaceController
  } from '../../controllers/workspaceController.js';
 import { isAuthenticated } from '../../middlewares/authMiddleware.js';
 import { createWorkspaceSchema } from '../../validators/workspaceSchema.js';
@@ -19,4 +21,13 @@ router.post('/',
     router.get('/:workspaceId', isAuthenticated, deleteWorkspaceController);
 
     router.get('/:workspaceId', isAuthenticated, getWorkspaceController);
+
+    router.get(
+        '/join/:joinCode',
+        isAuthenticated,
+        getWorkspaceByJoinCodeController
+      );
+
+      router.put('/:workspaceId', isAuthenticated, updateWorkspaceController);
+  
 export default router;

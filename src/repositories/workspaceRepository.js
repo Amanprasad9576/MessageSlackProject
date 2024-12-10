@@ -5,6 +5,7 @@ import Workspace from '../schema/workspace.js';
 import ClientError from '../utils/errors/clientError.js';
 import channelRepository from './channelRepository.js';
 import crudRepository from "./crudRepository.js";
+import { getWorkspaceByJoinCodeService } from '../service/workspaceService.js';
 
 const workspaceRepository = {
     ...crudRepository(Workspace),
@@ -130,9 +131,22 @@ const workspaceRepository = {
         }).populate('members.memberId', 'username email avatart');
     
         return workspaces;
-      }
-    };
+      },
     
+
+    getWorkspaceByJoinCode:async function(joinCode){
+     const workspace = await Workspace.findOne({joinCode});
+     if (!workspace) {
+      throw new ClientError({
+        explanation: 'Invalid data sent from the client',
+        message: 'Workspace not found',
+        statusCode: StatusCodes.NOT_FOUND
+      });
+    }
+
+     return workspace;
+    }
+  }; 
     export default workspaceRepository;
 
 

@@ -2,24 +2,41 @@ import { StatusCodes } from 'http-status-codes';
 import { v4 as uuidv4 } from 'uuid';
 
 import channelRepository from '../repositories/channelRepository.js';
+import userRepository from '../repositories/userRepository.js';
 import workspaceRepository from "../repositories/workspaceRepository.js";
 import ClientError from '../utils/errors/clientError.js';
 import ValidationError from '../utils/errors/validationError.js';
 
 export const isUserAdminOfWorkspace = async (userId, workspace) => {
-    console.log('Workspace Members:', workspace.members);
-    console.log('User ID:', userId);
+    try {
+      // Validate workspace and members
+      console.log('workspace in service',workspace);
+      
+      if ( !Array.isArray(workspace.members)) {
+        console.error('Invalid  members:', workspace);
+        throw new Error(' members data is invalid or missing.');
+      }
   
-    const response = workspace.members.find(
-      (member) =>
-        (member.memberId.toString() === userId ||
-          member.memberId._id?.toString() === userId) &&
-        member.role === 'admin'
-    );
+      console.log('Workspace Members: in UserAdmin function', workspace.members);
+      console.log('User ID: in UserAdmin function', userId);
   
-    console.log('Is Admin Response:', response);
-    return response;
+      // Find the admin member
+      const response = workspace.members.find(
+        (member) =>
+          (member.memberId.toString() === userId ||
+            member.memberId._id?.toString() === userId) &&
+          member.role === 'admin'
+      );
+  
+      console.log('Is Admin Response:', response);
+      return response;
+    } catch (error) {
+      console.error('Error in isUserAdminOfWorkspace:', error.message);
+      throw error;
+    }
   };
+  
+  
   
 export const isUserMemberOfWorkspace = (workspace, userId) => {
     return workspace.members.find(
@@ -89,8 +106,11 @@ export const deleteWorkspaceService = async(workspaceId,userId)=>{
         statusCode:'StatusCode.NOT_FOUND',
       });
      }
-     console.log(workspace.members,userId);
-      const isAllowed =isUserAdminOfWorkspace(workspace,userId);
+     console.log('workspace member  in service layer',workspace.members);
+     console.log('userId in service layer',userId);
+     console.log('member of workspace',workspace.members);
+
+     const isAllowed =isUserAdminOfWorkspace(workspace,userId);
       
       if(isAllowed){
       await channelRepository.deleteMany(workspace.channels);  // delete the workspace
@@ -153,11 +173,23 @@ export const getWorkspaceByJoinCodeService = async (joinCode,userId) =>{
         statusCode: StatusCodes.NOT_FOUND 
         })
      }
-      return response;
+      return workspace;
     } catch (error) {
       console.log('Error in fetch the workspace by joinCode',error);  
     }
 }
+
+export const getWorkspacesUserIsMemberOfService = async (userId) => {
+    try {
+      const response =
+        await workspaceRepository.fetchAllWorkspaceByMemberId(userId);
+      return response;
+    } catch (error) {
+      console.log('Get workspaces user is member of service error', error);
+      throw error;
+    }
+  };
+  
 
 export const updateWorkspaceService = async (
     workspaceId,
@@ -237,10 +269,7 @@ export const updateWorkspaceService = async (
         memberId,
         role
       );
-      addEmailtoMailQueue({
-        ...workspaceJoinMail(workspace),
-        to: isValidUser.email
-      });
+      
       return response;
     } catch (error) {
       console.log('addMemberToWorkspaceService error', error);

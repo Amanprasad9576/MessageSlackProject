@@ -35,8 +35,8 @@ export const isUserAdminOfWorkspace = async (userId, workspace) => {
       throw error;
     }
   };
-  
-  
+
+
   
 export const isUserMemberOfWorkspace = (workspace, userId) => {
     return workspace.members.find(

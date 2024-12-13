@@ -1,7 +1,8 @@
 import { StatusCodes } from "http-status-codes";
+
 import channelRepository from "../repositories/channelRepository.js";
 import ClientError from "../utils/errors/clientError.js";
-import { isUserMemberOfWorkspace } from "./workspaceService";
+import { isUserMemberOfWorkspace } from "./workspaceService.js";
 
 
 export const getChannelByIdService = async (channelId, userId) => {
@@ -37,7 +38,7 @@ export const getChannelByIdService = async (channelId, userId) => {
       console.log('Channel in service', channel);
   
       return {
-        messages,
+      
         _id: channel._id,
         name: channel.name,
         createdAt: channel.createdAt,

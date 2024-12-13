@@ -1,5 +1,6 @@
-import { getChannelByIdService } from "../service/channelService";
 import { StatusCodes } from "http-status-codes";
+
+import { getChannelByIdService } from "../service/channelService.js";
 import { customErrorResponse,   
          internalErrorResponse,
          successResponse

@@ -9,43 +9,26 @@ import { workspaceJoinMail } from '../utils/common/mailObject.js';
 import ClientError from '../utils/errors/clientError.js';
 import ValidationError from '../utils/errors/validationError.js';
 
+ // change the logic of isUserAdminOfWorkspace 
+ // this logic belong to isUserMemberOfWorkspace
+export const isUserAdminOfWorkspace = (workspace, userId) => {
+  console.log(userId);
+  return workspace.members.find((member) => {
+    console.log('member id ', member.memberId.toString());
+    return member.memberId._id.toString() === userId;
+  });
+};
+  // change the logic of i
+     
 
-export const isUserAdminOfWorkspace = async (userId, workspace) => {
-    try {
-      // Validate workspace and members
-      console.log('workspace in service',workspace);
-      
-      if ( !Array.isArray(workspace.members)) {
-        console.error('Invalid  members:', workspace);
-        throw new Error(' members data is invalid or missing.');
-      }
-  
-      console.log('Workspace Members: in UserAdmin function', workspace.members);
-      console.log('User ID: in UserAdmin function', userId);
-  
-      // Find the admin member
-      const response = workspace.members.find(
-        (member) =>
-          (member.memberId.toString() === userId ||
-            member.memberId._id?.toString() === userId) &&
-          member.role === 'admin'
-      );
-  
-      console.log('Is Admin Response:', response);
-      return response;
-    } catch (error) {
-      console.error('Error in isUserAdminOfWorkspace:', error.message);
-      throw error;
-    }
+  export const isUserMemberOfWorkspace = (workspace, userId) => {
+    console.log(userId);
+    return workspace.members.find((member) => {
+      console.log('member id ', member.memberId.toString());
+      return member.memberId._id.toString() === userId;
+    });
   };
-
-
   
-export const isUserMemberOfWorkspace = (workspace, userId) => {
-    return workspace.members.find(
-      (member) => member.memberId.toString() === userId
-    );
-  };
 
   const isChannelAlreadyPartOfWorkspace = (workspace, channelName) => {
     return workspace.channels.find(
@@ -131,31 +114,34 @@ export const deleteWorkspaceService = async(workspaceId,userId)=>{
   }
 };
   
-
-export const getWorkspaceService = async(userId,workspaceId) =>{
-    try {
-      const workspace = await workspaceRepository.getById(workspaceId); 
-      if(!workspace){
-       throw new ClientError({
-        explanation: 'workspace not found',
-        message: 'workspace does not exit',
+export const getWorkspaceService = async (workspaceId, userId) => {
+  try {
+    const workspace =
+      await workspaceRepository.getWorkspaceDetailsById(workspaceId);
+    if (!workspace) {
+      throw new ClientError({
+        explanation: 'Invalid data sent from the client',
+        message: 'Workspace not found',
         statusCode: StatusCodes.NOT_FOUND
-       })
-      }
-     const isMember = isUserAdminOfWorkspace(workspace,userId);
-     if(!isMember){
-        throw new ClientError({
-            message:'member is not found',
-            explanation:'member is not part of workspace',
-            statusCode:StatusCodes.NOT_FOUND,
-        })
-     }
-     return workspace;
-    } catch (error) {
-        console.log('Get workspace service error', error);
-        throw error;
+      });
     }
-}
+    console.log("Detail in service workspace.members",workspace.members);
+    console.log("workspace Detail",workspace);
+    const isMember = isUserMemberOfWorkspace(workspace, userId);
+    if (!isMember) {
+      throw new ClientError({
+        explanation: 'User is not a member of the workspace',
+        message: 'User is not a member of the workspace',
+        statusCode: StatusCodes.UNAUTHORIZED
+      });
+    }
+    return workspace;
+  } catch (error) {
+    console.log('Get workspace service error', error);
+    throw error;
+  }
+};
+
 
 export const getWorkspaceByJoinCodeService = async (joinCode,userId) =>{
     try {

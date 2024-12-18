@@ -80,7 +80,7 @@ export const createWorkspaceController = async (req, res) => {
       );
       return res
         .status(StatusCodes.OK)
-        .json(successResponse(response, 'Workspace fetch successfully'));
+        .json(successResponse(response, 'Workspace deleted successfully'));
     } catch (error) {
       console.log('Get workspace controller error', error);
       if (error.statusCode) {
@@ -92,7 +92,8 @@ export const createWorkspaceController = async (req, res) => {
         .json(internalErrorResponse(error));
     }
   };
-
+  
+ 
   export const getWorkspaceByJoinCodeController = async (req, res) => {
     try {
       const response = await getWorkspaceByJoinCodeService(

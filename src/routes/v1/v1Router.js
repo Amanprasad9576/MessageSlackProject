@@ -1,15 +1,21 @@
 import express from 'express';
 
 import channelRouter from './channel.js';
+import memberRouter from './member.js';
 import userRouter from './users.js';
 import  workspaceRouter from './workspace.js';
+import messageRouter from './message.js';
 
 const router = express.Router();
 
 router.use('/users', userRouter);
 
-router.use('/workspace',workspaceRouter);
+router.use('/workspaces',workspaceRouter);
 
-router.use('/channel',channelRouter);
+router.use('/channels',channelRouter);
+
+router.use('/members',memberRouter);
+
+router.use('/messages',messageRouter);
 
 export default router;

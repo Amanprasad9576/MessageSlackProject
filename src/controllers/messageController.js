@@ -1,9 +1,9 @@
 import { StatusCodes } from "http-status-codes";
+
 import { getMessageService } from "../service/messageService.js";
-import { successResponse,
+import {  customErrorResponse,
          internalErrorResponse,
-         customErrorResponse
-      } from "../utils/common/responseObjects.js";
+         successResponse      } from "../utils/common/responseObjects.js";
 export const getMessage = async (req,res)=>{
    try{
    const message = await getMessageService(  {
@@ -29,4 +29,11 @@ export const getMessage = async (req,res)=>{
       .json(internalErrorResponse(error));
   }
 };
+
+
+
+
+
+
+// create message
 // messageParams,page ,limit 

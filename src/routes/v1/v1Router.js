@@ -2,9 +2,9 @@ import express from 'express';
 
 import channelRouter from './channel.js';
 import memberRouter from './member.js';
+import messageRouter from './message.js';
 import userRouter from './users.js';
 import  workspaceRouter from './workspace.js';
-import messageRouter from './message.js';
 
 const router = express.Router();
 

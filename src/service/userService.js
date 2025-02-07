@@ -60,6 +60,7 @@ export const signUpService = async (data) => {
         username: user.username,
         avatar: user.avatar,
         email: user.email,
+        _id:user._id,
         token: createJWT({ id: user._id, email: user.email })
       };
     } catch (error) {

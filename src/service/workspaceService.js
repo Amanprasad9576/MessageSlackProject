@@ -212,7 +212,9 @@ export const updateWorkspaceService = async (
       throw error;
     }
   };
-  
+ 
+
+  // for reset what should be the input parameter
   export const addMemberToWorkspaceService = async (
     workspaceId,
     memberId,
@@ -320,8 +322,25 @@ export const updateWorkspaceService = async (
     }
   };
 
-    
-
+  export const resetJoinCodeService = async(workspaceId,userId) =>{
+    try {
+       const newJoinCode = uuidv4().substring(0,6).toUpperCase();
+       const updateWorkspace = await updateWorkspaceService(
+        workspaceId,
+        {
+           joinCode: newJoinCode
+        },
+       userId
+      );
+      return updateWorkspace;
+    } catch (error) {
+      console.log('Error in reset join code in service layer',error);
+       throw error;
+    }
+  } 
+ // 1.workspaceId , 
+ // 2.workspaceData , 
+ // 3. userId
 
      
 

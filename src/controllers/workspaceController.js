@@ -1,12 +1,13 @@
 import { StatusCodes } from "http-status-codes";
 
-import {         addChannelToWorkspaceService, 
+import { addChannelToWorkspaceService, 
         addMemberToWorkspaceService,
         createWorkspaceService, 
         deleteWorkspaceService, 
         getWorkspaceByJoinCodeService, 
         getWorkspaceService,
         getWorkspacesUserIsMemberOfService,
+        resetJoinCodeService,
         updateWorkspaceService} from "../service/workspaceService.js";
 import {  customErrorResponse,
           internalErrorResponse,
@@ -187,6 +188,31 @@ export const createWorkspaceController = async (req, res) => {
     }
   };
 
+
+ export const resetJoinCodeController =async(req,res)=>{
+  try {
+     const response = resetJoinCodeService(
+          req.params.workspaceId,
+          req.user
+    );
+    return res
+       .status(StatusCodes.OK)
+       .json(successResponse(response,'join code reset successfully'));
+  } catch (error) {
+       console.log('reset join code controller error', error);
+       if (error.statusCode) {
+           return res.status(error.statusCode).json(customErrorResponse(error));
+       }
+
+       return res
+          .status(StatusCodes.INTERNAL_SERVER_ERROR)
+        .json(internalErrorResponse(error));
+     }
+
+  }
+ 
+
+ // workspaceId , userId
 
 
 

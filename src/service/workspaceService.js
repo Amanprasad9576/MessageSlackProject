@@ -214,7 +214,6 @@ export const updateWorkspaceService = async (
   };
  
 
-  // for reset what should be the input parameter
   export const addMemberToWorkspaceService = async (
     workspaceId,
     memberId,
@@ -321,23 +320,60 @@ export const updateWorkspaceService = async (
       throw error;
     }
   };
-
-  export const resetJoinCodeService = async(workspaceId,userId) =>{
+  
+  export const resetWorkspaceJoinCodeService = async (workspaceId, userId) => {
     try {
-       const newJoinCode = uuidv4().substring(0,6).toUpperCase();
-       const updateWorkspace = await updateWorkspaceService(
+      const newJoinCode = uuidv4().substring(0, 6).toUpperCase();
+      const updatedWorkspace = await updateWorkspaceService(
         workspaceId,
         {
-           joinCode: newJoinCode
+          joinCode: newJoinCode
         },
-       userId
+        userId
       );
-      return updateWorkspace;
+      return updatedWorkspace;
     } catch (error) {
-      console.log('Error in reset join code in service layer',error);
-       throw error;
+      console.log('resetWorkspaceJoinCodeService error', error);
+      throw error;
     }
-  } 
+  };
+  
+  
+  
+  
+  export const joinWorkspaceService = async (workspaceId, joinCode, userId) => {
+    try {
+      const workspace =
+        await workspaceRepository.getWorkspaceDetailsById(workspaceId);
+      if (!workspace) {
+        throw new ClientError({
+          explanation: 'Invalid data sent from the client',
+          message: 'Workspace not found',
+          statusCode: StatusCodes.NOT_FOUND
+        });
+      }
+  
+      if (workspace.joinCode !== joinCode) {
+        throw new ClientError({
+          explanation: 'Invalid data sent from the client',
+          message: 'Invalid join code',
+          statusCode: StatusCodes.UNAUTHORIZED
+        });
+      }
+  
+      const updatedWorkspace = await workspaceRepository.addMemberToWorkspace(
+        workspaceId,
+        userId,
+        'member'
+      );
+  
+      return updatedWorkspace;
+    } catch (error) {
+      console.log('joinWorkspaceService error', error);
+      throw error;
+    }
+  };
+  
  // 1.workspaceId , 
  // 2.workspaceData , 
  // 3. userId

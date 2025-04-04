@@ -1,13 +1,15 @@
 import express from 'express';
 
 import { addChannelToWorkspaceController,
-        addMemberToWorkspaceController,
-        createWorkspaceController,
+         addMemberToWorkspaceController,
+         createWorkspaceController,
         deleteWorkspaceController,
         getWorkspaceByJoinCodeController,
         getWorkspaceController,
         getWorkspacesUserIsMemberOfController,
-        resetJoinCodeController,        updateWorkspaceController } from '../../controllers/workspaceController.js';
+        joinWorkspaceController,      
+        resetJoinCodeController,      
+        updateWorkspaceController } from '../../controllers/workspaceController.js';
 import { isAuthenticated } from '../../middlewares/authMiddleware.js';
 import { addChannelToWorkspaceSchema,
          addMemberToWorkspaceSchema,
@@ -35,6 +37,8 @@ router.post(
     getWorkspaceByJoinCodeController
   );
   
+  router.put('/:workspaceId/join', isAuthenticated, joinWorkspaceController);
+
   router.put('/:workspaceId', isAuthenticated, updateWorkspaceController);
   
   router.put(
